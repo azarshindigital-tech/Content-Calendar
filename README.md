@@ -5,7 +5,8 @@
 می‌کند و برای هرکدام ایدهٔ محتوایی اجرایی می‌سازد.
 
 - فرانت‌اند: HTML/CSS/JavaScript ماژولار و بدون بیلد (بدون فریم‌ورک، RTL، فونت Vazirmatn).
-- بک‌اند: یک **Cloudflare Pages Function** که به‌صورت امن و سمت سرور با **Google Gemini** کار می‌کند.
+- بک‌اند: یک **Cloudflare Worker** (با Static Assets) که فایل‌های استاتیک را سرو می‌کند و
+  مسیر `/api/suggest` را به‌صورت امن و سمت سرور با **Google Gemini** اجرا می‌کند.
 - منبع داده: `public/data/events.json` — تنها مرجع معتبر تقویم (۱۲۳۶ مناسبت).
 
 ---
@@ -48,9 +49,8 @@ GEMINI_API_KEY=کلید-واقعی-شما
 npm run dev
 ```
 
-این دستور `wrangler pages dev` را اجرا می‌کند که هم فایل‌های استاتیک (`public/`) و هم
-تابع `functions/api/suggest.js` را به‌صورت محلی سرو می‌کند. آدرس پیش‌فرض:
-`http://127.0.0.1:8788`.
+این دستور `wrangler dev` را اجرا می‌کند که هم فایل‌های استاتیک (`public/`) و هم
+Worker (`src/index.js`) را به‌صورت محلی سرو می‌کند و کلید محرمانه را از `.dev.vars` می‌خواند.
 
 ## ۵. اجرای تست‌ها
 
@@ -85,8 +85,8 @@ npm test
 │           ├── ui-assistant.js     # رندر فرم و کارت‌های پیشنهاد
 │           ├── api.js              # کلاینت فراخوانی API
 │           └── app.js              # وضعیت و هماهنگی کل اپ
-├── functions/
-│   ├── api/suggest.js              # POST /api/suggest (منطق سرور)
+├── src/
+│   ├── index.js                    # Worker: سرو استاتیک + POST /api/suggest
 │   └── lib/{gemini.js, prompt.js}  # لایهٔ تماس با مدل و ساخت پرامپت
 ├── tests/                          # تست‌های واحد (node --test)
 ├── wrangler.toml                   # پیکربندی Cloudflare Pages
@@ -134,9 +134,10 @@ npm test
 
 ---
 
-## ۹. ساخت و انتشار روی Cloudflare Pages
+## ۹. ساخت و انتشار روی Cloudflare Workers
 
-نیازی به مرحلهٔ Build نیست؛ خروجی همان پوشهٔ `public/` است و توابع از `functions/` خوانده می‌شوند.
+این پروژه یک **Worker با Static Assets** است: فایل‌های `public/` به‌عنوان asset سرو می‌شوند و
+`src/index.js` مسیر `/api/suggest` را اجرا می‌کند. همهٔ تنظیمات در `wrangler.toml` است و نیازی به مرحلهٔ Build جداگانه نیست.
 
 ### الف) انتشار از خط فرمان
 
@@ -145,29 +146,33 @@ npm test
 npx wrangler login
 
 # ۲) ثبت کلید محرمانه روی محیط Production (مقدار به‌صورت تعاملی پرسیده می‌شود)
-npx wrangler pages secret put GEMINI_API_KEY
+npx wrangler secret put GEMINI_API_KEY
 
 # ۳) انتشار
-npm run deploy      # معادل: wrangler pages deploy
+npm run deploy      # معادل: wrangler deploy
 ```
 
-نخستین انتشار، پروژهٔ Pages را می‌سازد و یک آدرس پیش‌فرض
-`https://<project>.pages.dev` می‌دهد.
+آدرس پیش‌فرض به‌صورت `https://content-calendar.<subdomain>.workers.dev` در دسترس است
+(اگر غیرفعال بود، از Settings → Domains & Routes گزینهٔ workers.dev را فعال کنید).
 
-### ب) انتشار از طریق مخزن Git (اختیاری)
+### ب) انتشار خودکار از طریق مخزن Git (Workers Builds)
 
-در داشبورد Cloudflare → Pages → اتصال مخزن، با تنظیمات:
-- **Build command:** خالی
-- **Build output directory:** `public`
-- در بخش **Settings → Variables and Secrets**: افزودن `GEMINI_API_KEY` به‌عنوان Secret
-  و در صورت نیاز `GEMINI_MODEL` / `APP_TIMEZONE`.
+در داشبورد Cloudflare → Workers & Pages → همان Worker → Settings → Build:
+- اتصال مخزن گیت‌هاب به شاخهٔ `main`.
+- **Deploy command:** `npx wrangler deploy` (پیش‌فرض).
+- **Build command:** خالی (یا `npm install`).
+- کلید را از **Settings → Variables and Secrets** به‌عنوان **Secret** با نام `GEMINI_API_KEY` اضافه کنید؛
+  متغیرهای `GEMINI_MODEL` و `APP_TIMEZONE` از `wrangler.toml` خودکار اعمال می‌شوند.
+- بعد از افزودن Secret یک‌بار **Retry/Redeploy** کنید تا Worker کلید را بگیرد.
+
+با هر `git push` روی `main`، Cloudflare خودکار نسخهٔ جدید را build و منتشر می‌کند.
 
 ### بررسی نسخهٔ منتشرشده
 
-1. باز کردن آدرس `*.pages.dev` و بررسی بارگذاری تقویم و شمارش ۱۲۳۶ مناسبت.
+1. باز کردن آدرس `*.workers.dev` و بررسی بارگذاری تقویم و شمارش ۱۲۳۶ مناسبت.
 2. تست یک درخواست پیشنهاد:
    ```bash
-   curl -s -X POST https://<project>.pages.dev/api/suggest \
+   curl -s -X POST https://content-calendar.<subdomain>.workers.dev/api/suggest \
      -H "Content-Type: application/json" \
      -d '{"business":{"field":"نرم‌افزار حسابداری ابری","product":"حسابداری","audience":"مدیران مالی","goals":["افزایش تعامل"],"channels":["لینکدین"]}}'
    ```

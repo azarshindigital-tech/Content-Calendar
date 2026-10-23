@@ -1,12 +1,17 @@
-# Cloudflare Pages configuration
-# Static assets live in ./public ; serverless API lives in ./functions
-name = "monasebat-yar"
+# Cloudflare Worker (with static assets) configuration.
+# The static site lives in ./public and is served via the ASSETS binding;
+# src/index.js handles /api/suggest and delegates everything else to the assets.
+name = "content-calendar"
+main = "src/index.js"
 compatibility_date = "2026-09-01"
-pages_build_output_dir = "public"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
 
 # Non-secret, public configuration. The AI model can be changed without code edits.
-# Secrets (GEMINI_API_KEY) are NOT set here — they live in `.dev.vars` locally
-# and in Cloudflare "Secrets" in production (see README).
+# Secrets (GEMINI_API_KEY) are NOT set here — they live in `.dev.vars` locally and
+# as a Worker *Secret* in production (see README).
 [vars]
 GEMINI_MODEL = "gemini-3.8-flash"
 APP_TIMEZONE = "Asia/Tehran"

@@ -1,16 +1,17 @@
 /*
- * POST /api/suggest — the content-suggestion endpoint (Cloudflare Pages Function).
+ * Cloudflare Worker entry — serves the static site (via the ASSETS binding) and
+ * handles the POST /api/suggest endpoint.
  *
- * Flow: validate input -> compute the 7-day window server-side (Asia/Tehran) ->
- * extract the REAL occasions from the bundled dataset -> ask Gemini only about
- * those -> validate the model's output against the authoritative data (names and
- * dates come from the data, never from the model) -> return structured JSON.
+ * Flow for /api/suggest: validate input -> compute the 7-day window server-side
+ * (Asia/Tehran) -> extract the REAL occasions from the bundled dataset -> ask
+ * Gemini only about those -> validate the model's output against the authoritative
+ * data (names and dates come from the data, never from the model) -> return JSON.
  */
-import eventsRaw from '../../public/data/events.json';
-import * as C from '../../public/assets/js/calendar.js';
-import { buildDataset, eventsInRange } from '../../public/assets/js/data.js';
-import { callGemini, GeminiError } from '../lib/gemini.js';
-import { SYSTEM_INSTRUCTION, buildUserPrompt } from '../lib/prompt.js';
+import eventsRaw from '../public/data/events.json';
+import * as C from '../public/assets/js/calendar.js';
+import { buildDataset, eventsInRange } from '../public/assets/js/data.js';
+import { callGemini, GeminiError } from './lib/gemini.js';
+import { SYSTEM_INSTRUCTION, buildUserPrompt } from './lib/prompt.js';
 
 // Built once per isolate.
 const dataset = buildDataset(eventsRaw);
@@ -47,10 +48,9 @@ function resolveReferenceJdn(referenceDate, tz) {
   return { jdn: C.todayJdn(tz), basedOn: 'today' };
 }
 
-export async function onRequestPost(context) {
-  const { request, env } = context;
+async function handleSuggest(request, env) {
   const tz = env.APP_TIMEZONE || 'Asia/Tehran';
-  const model = env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const model = env.GEMINI_MODEL || 'gemini-3.8-flash';
 
   // --- Parse & cap input ----------------------------------------------------
   let body;
@@ -182,3 +182,15 @@ export async function onRequestPost(context) {
     generatedAtShamsi: C.formatShamsi(C.todayJdn(tz), { long: true })
   });
 }
+
+export default {
+  async fetch(request, env, ctx) {
+    const url = new URL(request.url);
+    if (url.pathname === '/api/suggest') {
+      if (request.method !== 'POST') return fail('METHOD', 'این مسیر فقط POST را می‌پذیرد.', 405);
+      return handleSuggest(request, env);
+    }
+    // Everything else is served from the static assets (public/).
+    return env.ASSETS.fetch(request);
+  }
+};
