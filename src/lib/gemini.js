@@ -70,7 +70,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 /** Calls Gemini and returns the parsed JSON object matching RESPONSE_SCHEMA.
  *  Retries the transient "high demand" (503) and network/timeout cases with
  *  exponential backoff; non-retryable errors (auth, bad request) fail fast. */
-export async function callGemini({ apiKey, model, systemInstruction, userPrompt, temperature = 0.8, timeoutMs = 45000, maxRetries = 2 }) {
+export async function callGemini({ apiKey, model, systemInstruction, userPrompt, temperature = 0.8, timeoutMs = 45000, maxRetries = 4 }) {
   if (!apiKey) throw new GeminiError('CONFIG', 'کلید سرویس هوش مصنوعی روی سرور تنظیم نشده است.', 500);
 
   const payload = JSON.stringify({
