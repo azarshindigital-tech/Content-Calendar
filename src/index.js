@@ -50,7 +50,7 @@ function resolveReferenceJdn(referenceDate, tz) {
 
 async function handleSuggest(request, env) {
   const tz = env.APP_TIMEZONE || 'Asia/Tehran';
-  const model = env.GEMINI_MODEL || 'gemini-3.8-flash';
+  const model = env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 
   // --- Parse & cap input ----------------------------------------------------
   let body;
