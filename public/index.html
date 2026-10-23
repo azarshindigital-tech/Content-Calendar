@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>مناسبت‌یار — تقویم هوشمند مناسبت‌ها و دستیار محتوا</title>
+  <meta name="description" content="تقویم آنلاین مناسبت‌های سال ۱۴۰۵ به‌همراه دستیار هوشمند تولید ایدهٔ محتوا برای کسب‌وکارها." />
+  <meta name="theme-color" content="#6b56e6" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%236b56e6'/%3E%3Cpath d='M7 4v3M17 4v3M5 9h14' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3Crect x='4.5' y='6' width='15' height='14' rx='3' fill='none' stroke='white' stroke-width='2'/%3E%3C/svg%3E" />
+</head>
+<body>
+  <div class="app">
+    <!-- Top bar ---------------------------------------------------------- -->
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <span class="brand__logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/>
+              <path d="M12 12.5l.9 2 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="brand__text">
+            <span class="brand__name">مناسبت‌یار</span>
+            <span class="brand__tag">تقویم مناسبت‌ها + دستیار محتوا</span>
+          </span>
+        </div>
+
+        <nav class="topnav" role="tablist" aria-label="بخش‌ها">
+          <button class="topnav__btn" data-section="calendar" role="tab" aria-selected="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+            <span>تقویم</span>
+          </button>
+          <button class="topnav__btn" data-section="assistant" role="tab" aria-selected="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6z"/><path d="M19 14l.8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8z"/></svg>
+            <span>دستیار محتوا</span>
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- ============================ CALENDAR ======================= -->
+      <section id="section-calendar" class="section" role="tabpanel">
+        <div id="data-notice"></div>
+        <div class="cal-layout">
+          <div class="card cal">
+            <div class="cal__toolbar">
+              <div class="cal__nav">
+                <button class="btn btn--icon" id="nav-prev" aria-label="بازهٔ قبلی">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+                </button>
+                <button class="btn btn--sm" id="nav-today">امروز</button>
+                <button class="btn btn--icon" id="nav-next" aria-label="بازهٔ بعدی">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+                </button>
+              </div>
+              <div class="cal__title" id="cal-title"></div>
+              <div class="cal__spacer"></div>
+              <div class="toolbar-group">
+                <div class="segmented" id="seg-view" role="group" aria-label="نوع نما">
+                  <button class="segmented__btn is-active" data-view="month">ماه</button>
+                  <button class="segmented__btn" data-view="week">هفته</button>
+                  <button class="segmented__btn" data-view="day">روز</button>
+                </div>
+                <div class="segmented" id="seg-cal" role="group" aria-label="نوع تقویم">
+                  <button class="segmented__btn is-active" data-caltype="shamsi">شمسی</button>
+                  <button class="segmented__btn" data-caltype="gregorian">میلادی</button>
+                </div>
+              </div>
+            </div>
+            <div class="legend" id="legend"></div>
+            <div id="cal-body"></div>
+          </div>
+
+          <aside class="side">
+            <div class="card detail" id="detail"></div>
+            <div class="card rangelist">
+              <div class="panel-title">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                <span>فهرست مناسبت‌های این بازه</span>
+              </div>
+              <div class="rangelist__search">
+                <input type="search" id="search" placeholder="جست‌وجو در مناسبت‌ها…" aria-label="جست‌وجو" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              </div>
+              <div id="rangelist-body"></div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ============================ ASSISTANT ====================== -->
+      <section id="section-assistant" class="section" role="tabpanel">
+        <div class="asst-layout">
+          <form class="card asst-form" id="asst-form" novalidate>
+            <div class="asst-hero">
+              <h2>دستیار تولید محتوا</h2>
+              <p>کسب‌وکارتان را معرفی کنید تا برای مناسبت‌های مرتبطِ هفت روز آینده، ایدهٔ محتوایی اجرایی بسازیم.</p>
+            </div>
+
+            <div class="field" id="field-field">
+              <label class="field__label" for="f-field">حوزهٔ فعالیت و معرفی کوتاه <span class="field__req">*</span></label>
+              <textarea class="textarea" id="f-field" placeholder="مثال: شرکت ارائه‌دهندهٔ نرم‌افزار حسابداری برای کسب‌وکارهای کوچک و متوسط."></textarea>
+              <div class="field__err"></div>
+            </div>
+
+            <div class="field" id="field-product">
+              <label class="field__label" for="f-product">محصول یا خدمت اصلی <span class="field__req">*</span></label>
+              <input class="input" id="f-product" placeholder="مثال: نرم‌افزار حسابداری ابری و مدیریت مالی" />
+              <div class="field__err"></div>
+            </div>
+
+            <div class="field" id="field-audience">
+              <label class="field__label" for="f-audience">مخاطب هدف <span class="field__req">*</span></label>
+              <input class="input" id="f-audience" placeholder="مثال: مدیران مالی و صاحبان کسب‌وکارهای کوچک" />
+              <div class="field__err"></div>
+            </div>
+
+            <div class="field" id="field-goals">
+              <label class="field__label">هدف محتوا یا کمپین <span class="field__req">*</span> <span class="opt">(یک یا چند مورد)</span></label>
+              <div class="chips" id="goals"></div>
+              <div class="field__err"></div>
+            </div>
+
+            <div class="field" id="field-channels">
+              <label class="field__label">کانال انتشار <span class="field__req">*</span> <span class="opt">(یک یا چند مورد)</span></label>
+              <div class="chips" id="channels"></div>
+              <div class="field__err"></div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="f-tone">لحن برند</label>
+              <select class="select" id="f-tone"></select>
+            </div>
+
+            <!-- Reference date + window preview -->
+            <div class="field">
+              <label class="field__label">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+                تاریخ مبنای بازهٔ هفت‌روزه
+              </label>
+              <div style="display:flex;gap:8px;align-items:center">
+                <select class="select" id="ref-month" aria-label="ماه" style="flex:1"></select>
+                <select class="select" id="ref-day" aria-label="روز" style="width:92px"></select>
+                <button type="button" class="btn btn--sm" id="ref-today">امروز</button>
+              </div>
+              <div id="window-preview"></div>
+            </div>
+
+            <!-- Advanced -->
+            <div class="advanced" id="advanced">
+              <button type="button" class="advanced__toggle" id="adv-toggle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                تنظیمات پیشرفته (اختیاری)
+              </button>
+              <div class="advanced__body">
+                <div class="field" id="field-constraints">
+                  <label class="field__label" for="f-constraints">محدودیت‌ها و ملاحظات <span class="opt">(اختیاری)</span></label>
+                  <textarea class="textarea" id="f-constraints" placeholder="مثال: از ادعاهای قطعی دربارهٔ سود خودداری شود؛ لحن نباید سیاسی باشد."></textarea>
+                  <div class="field__hint">هر چیزی که نباید در محتوا مطرح شود یا باید رعایت گردد.</div>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--lg btn--block" id="btn-generate" style="margin-top:8px">
+              تولید پیشنهاد محتوا
+            </button>
+          </form>
+
+          <div id="results" class="results"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer style="text-align:center;padding:24px;color:var(--text-3);font-size:0.78rem">
+      مناسبت‌یار • دادهٔ مناسبت‌های سال ۱۴۰۵ • پیشنهادهای محتوا با هوش مصنوعی ساخته می‌شوند و پیش از انتشار بازبینی انسانی لازم دارند.
+    </footer>
+  </div>
+
+  <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

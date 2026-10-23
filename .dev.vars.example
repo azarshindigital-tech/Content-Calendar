@@ -1,0 +1,4 @@
+# Copy this file to `.dev.vars` and fill in your real key for local development.
+# `.dev.vars` is gitignored and is NEVER deployed or committed.
+# In production, set GEMINI_API_KEY as a Cloudflare Pages *Secret* (see README).
+GEMINI_API_KEY=your-gemini-api-key-here

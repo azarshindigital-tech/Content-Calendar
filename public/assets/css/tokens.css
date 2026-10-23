@@ -1,0 +1,93 @@
+/* ============================================================================
+   Design tokens — the single source of visual truth for مناسبت‌یار.
+   Light, neutral canvas + one deep indigo-violet brand color, used with intent.
+   ============================================================================ */
+:root {
+  /* --- Brand ------------------------------------------------------------- */
+  --brand-050: #efecfe;
+  --brand-100: #e0dbfc;
+  --brand-200: #c6bcf9;
+  --brand-300: #a596f2;
+  --brand-400: #8470e9;
+  --brand-500: #6b56e6;   /* primary */
+  --brand-600: #5a44d6;
+  --brand-700: #4a37b4;
+  --brand-800: #3d2f92;
+  --brand: var(--brand-500);
+  --brand-ink: #ffffff;
+  --brand-gradient: linear-gradient(135deg, #8370f0 0%, #6b56e6 52%, #5338cf 100%);
+
+  /* --- Neutrals / surfaces ---------------------------------------------- */
+  --bg: #f5f6fb;
+  --bg-tint: radial-gradient(1200px 600px at 100% -5%, #ece9fb 0%, rgba(236,233,251,0) 60%),
+             radial-gradient(900px 500px at -10% 0%, #e9f0fb 0%, rgba(233,240,251,0) 55%),
+             #f5f6fb;
+  --surface: #ffffff;
+  --surface-2: #fbfbfe;
+  --surface-3: #f3f4fa;
+  --overlay: rgba(23, 25, 40, 0.42);
+
+  /* --- Text -------------------------------------------------------------- */
+  --text: #191c2b;
+  --text-2: #565d72;
+  --text-3: #8b92a7;
+  --text-on-brand: #ffffff;
+
+  /* --- Lines ------------------------------------------------------------- */
+  --border: #e7e9f2;
+  --border-2: #dde0ec;
+  --border-strong: #ccd1e0;
+
+  /* --- Status ------------------------------------------------------------ */
+  --success: #0ca678;  --success-bg: #e7f8f2;
+  --warning: #e8911a;  --warning-bg: #fdf3e2;
+  --danger:  #e5484d;  --danger-bg:  #fdecec;
+  --info:    #3b82f6;  --info-bg:    #e8f1fe;
+
+  /* --- Radii ------------------------------------------------------------- */
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 13px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* --- Spacing ----------------------------------------------------------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-7: 32px; --s-8: 40px;
+  --s-9: 48px; --s-10: 64px;
+
+  /* --- Typography -------------------------------------------------------- */
+  --font-sans: 'Vazirmatn', 'Segoe UI', Tahoma, system-ui, -apple-system, sans-serif;
+  --fs-xs: 0.75rem;    /* 12 */
+  --fs-sm: 0.82rem;    /* ~13 */
+  --fs-base: 0.92rem;  /* ~14.5 */
+  --fs-md: 1rem;       /* 16 */
+  --fs-lg: 1.14rem;    /* ~18 */
+  --fs-xl: 1.4rem;     /* ~22 */
+  --fs-2xl: 1.78rem;   /* ~28 */
+  --fs-3xl: 2.15rem;   /* ~34 */
+  --lh-tight: 1.3;
+  --lh: 1.65;
+
+  /* --- Shadows ----------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(20, 24, 51, 0.05);
+  --shadow-sm: 0 2px 6px -2px rgba(20, 24, 51, 0.09);
+  --shadow-md: 0 8px 22px -8px rgba(20, 24, 51, 0.14);
+  --shadow-lg: 0 22px 50px -18px rgba(20, 24, 51, 0.26);
+  --shadow-brand: 0 10px 26px -10px rgba(90, 68, 214, 0.5);
+  --ring: 0 0 0 4px var(--brand-100);
+  --ring-danger: 0 0 0 4px var(--danger-bg);
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-1: 0.12s;
+  --dur-2: 0.2s;
+  --dur-3: 0.32s;
+
+  --maxw: 1240px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
